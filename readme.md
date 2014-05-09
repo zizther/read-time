@@ -9,7 +9,7 @@ This will calculate the time after after.
 ## Parameters
 Use the following parameter to specify what the plugin should return.
 
-### speed="5"
+### speed=""
 Number of words read per minute. Default is 200.
 
 
