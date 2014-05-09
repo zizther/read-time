@@ -1,4 +1,4 @@
-# Excerpt Plugin
+# Read Time Plugin
 
 Wrap anything you want to be processed between the tag pairs. 
 This will calculate the time after after.
