@@ -1,4 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+// Forward compatibility for the ee() function which replaces $this->EE in
+// recent versions of ExpressionEngine
+if (!function_exists('ee'))
+{
+    function ee()
+    {
+        public static $EE;
+        if (!$EE) { $EE = get_instance(); }
+        return $EE;
+    }
+}
+
 /*
 ========================================================
 Plugin Read Time
@@ -41,22 +54,19 @@ Class Readtime {
 
     var $return_data;
 
-
     function __construct()
     {
-        $this->EE =& get_instance();
-
-        $this->speed = $this->EE->TMPL->fetch_param('speed', '200');
+        $this->speed = ee()->TMPL->fetch_param('speed', '200');
         
         // Cleanup speed parameter
         if (!is_numeric($this->speed))
         {
-            $this->EE->TMPL->log_item('Excerpt: Error - speed parameter not numeric');
+            ee()->TMPL->log_item('Excerpt: Error - speed parameter not numeric');
             $this->speed = 200;
         }
 
         // Pass cleaned tag content to $return_data
-        $this->return_data = $this->readTime($this->EE->TMPL->tagdata);
+        $this->return_data = $this->readTime(ee()->TMPL->tagdata);
     }// END __construct
     
     
