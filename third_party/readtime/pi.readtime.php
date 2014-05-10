@@ -1,4 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+// Forward compatibility for the ee() function which replaces $this->EE in
+// recent versions of ExpressionEngine
+if (!function_exists('ee'))
+{
+    function ee()
+    {
+        public static $EE;
+        if (!$EE) { $EE = get_instance(); }
+        return $EE;
+    }
+}
+
 /*
 ========================================================
 Plugin Read Time
@@ -18,12 +31,12 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 $plugin_info = array(
-	'pi_name' 			=> 'Read Time',
-    'pi_version' 		=> '0.1',
-    'pi_author' 		=> 'Nathan Reed',
-    'pi_author_url' 	=> 'http://vimia.co.uk',
-    'pi_description' 	=> 'Calculates how long it takes to read a field',
-    'pi_usage' 			=> readtime::usage()
+    'pi_name'           => 'Read Time',
+    'pi_version'        => '0.1',
+    'pi_author'         => 'Nathan Reed',
+    'pi_author_url'     => 'http://vimia.co.uk',
+    'pi_description'    => 'Calculates how long it takes to read a field',
+    'pi_usage'          => readtime::usage()
 );
 
 
@@ -41,29 +54,26 @@ Class Readtime {
 
     var $return_data;
 
-
-	function __construct()
+    function __construct()
     {
-        $this->EE =& get_instance();
+        $this->speed = ee()->TMPL->fetch_param('speed', '200');
+        
+        // Cleanup speed parameter
+        if (!is_numeric($this->speed))
+        {
+            ee()->TMPL->log_item('Excerpt: Error - speed parameter not numeric');
+            $this->speed = 200;
+        }
 
-		$this->speed = $this->EE->TMPL->fetch_param('speed', '200');
-    	
-		// Cleanup speed parameter
-    	if (!is_numeric($this->speed))
-    	{
-			$this->EE->TMPL->log_item('Excerpt: Error - speed parameter not numeric');
-    		$this->speed = 200;
-    	}
-
-		// Pass cleaned tag content to $return_data
-		$this->return_data = $this->readTime($this->EE->TMPL->tagdata);
+        // Pass cleaned tag content to $return_data
+        $this->return_data = $this->readTime(ee()->TMPL->tagdata);
     }// END __construct
     
     
     function readTime($str)
     {
-    	// Clean content
-		$str = strip_tags($str);
+        // Clean content
+        $str = strip_tags($str);
         $str = str_replace("\n", ' ', $str);
         $str = preg_replace("/\s+/", ' ', $str);
         $str = trim($str);
@@ -78,8 +88,8 @@ Class Readtime {
         // Return if less than 1 minute
         if( $fraction_time < 1 ) {
         
-	        return 'Less than 1 minute';
-	        
+            return 'Less than 1 minute';
+            
         }
         
         
@@ -96,14 +106,14 @@ Class Readtime {
     }// END clean
 
 
-	/**
-	 * Usage
-	 *
-	 * Plugin Usage
-	 *
-	 * @access	public
-	 * @return	string
-	 */
+    /**
+     * Usage
+     *
+     * Plugin Usage
+     *
+     * @access  public
+     * @return  string
+     */
     function usage()
     {
         ob_start();
