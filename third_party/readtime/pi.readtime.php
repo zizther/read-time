@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-// Forward compatibility for the ee() function which replaces $this->EE in recent versions of ExpressionEngine
 /**
+ * Forward compatibility for the ee() function which replaces $this->EE in recent versions of ExpressionEngine
  * < EE 2.6.0 backward compat
  */
 if ( ! function_exists('ee'))
